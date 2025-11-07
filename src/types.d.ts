@@ -136,5 +136,13 @@ export interface PostFormProps {
   body:      string;
   userId:    number;
   tags:      string;
-  onSave?: (s: PostPutResponse) => void;
+  onUpdate?: (s: PostPutResponse) => void;
+  onNew?: (s: PostPutResponse) => void;
+}
+export interface PostPostResponse {
+  id: number;
+  title:  string;
+  body:   string;
+  userId: number;
+  tags:   string[];
 }
