@@ -1,3 +1,4 @@
+import { Button } from 'primereact/button';
 import { Outlet, useNavigate } from 'react-router-dom';
 import './authLayout.css';
 
@@ -8,7 +9,7 @@ function AuthLayout() {
   }
   return (
     <>
-      <header>Accediste Jesús Sierra <button onClick={logout}>Logout</button></header>
+      <header><span>Accediste Jesús Sierra </span><Button onClick={logout} label='Logout'/></header>
       <Outlet />
     </>
   );
