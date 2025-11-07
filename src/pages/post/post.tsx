@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { FilterMatchMode } from 'primereact/api';
 import { Column, type ColumnFilterElementTemplateOptions } from 'primereact/column';
+import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { DataTable } from 'primereact/datatable';
 import { Dropdown } from 'primereact/dropdown';
 import { MultiSelect } from 'primereact/multiselect';
@@ -8,7 +9,7 @@ import { Toast } from 'primereact/toast';
 import { useEffect, useRef, useState } from 'react';
 import { EditButtonTemplate } from '../../components/actions/actions';
 import { GetSingleUserResponseToUserBasicInfo } from '../../mappers/users/users';
-import type { GetAllPostResponse, GetSingleUserResponse, Post, UserBasicInfo } from '../../types';
+import type { GetAllPostResponse, GetSingleUserResponse, Post, PostDeleteResponse, UserBasicInfo } from '../../types';
 import './post.css';
 
 type DisplayedPost = {
@@ -72,13 +73,25 @@ function Post() {
   }, []);
 
   const onCancel = (d: DisplayedPost) => {
-    console.log(d);
-    toast.current.show({ severity: 'info', summary: 'Info', detail: `Post ID: ${d.id} Titulo: ${d.title}` });
+
+    confirmDialog({
+      message: `Are you sure you want to cancel the post?`,
+      header: `Cancel Post: ${d.title}`,
+      accept: () => {
+        axios.delete<PostDeleteResponse>(`https://dummyjson.com/posts/${d.id}`).then(response => {
+          const postDeleted = response.data;
+          toast.current.show({ severity: 'info', summary: 'Info', detail: `Post cancelled` });
+          setPost(prevPosts => prevPosts.filter(p => p.id !== postDeleted.id));
+        })
+      },
+    });
   };
+  
   const onView = (d: DisplayedPost) => {
     console.log(d);
     toast.current.show({ severity: 'info', summary: 'Info', detail: `Post ID: ${d.id} Titulo: ${d.title}` });
   };
+
   const onEdit = (d: DisplayedPost) => {
     console.log(d);
     toast.current.show({ severity: 'info', summary: 'Info', detail: `Post ID: ${d.id} Titulo: ${d.title}` });
@@ -152,6 +165,7 @@ const userFilterTemplate = (options: ColumnFilterElementTemplateOptions) => {
         <Column field="actions" header="Editar" body={buttonGroupTemplate}></Column>
       </DataTable>
       <Toast ref={toast} />
+      <ConfirmDialog />
 
     </>
   );

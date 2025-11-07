@@ -98,3 +98,20 @@ export interface UserBasicInfo {
   firstName: string;
   lastName: string;
 }
+
+export interface PostDeleteResponse {
+  id:        number;
+  title:     string;
+  body:      string;
+  tags:      string[];
+  reactions: Reactions;
+  views:     number;
+  userId:    number;
+  isDeleted: boolean;
+  deletedOn: Date;
+}
+
+export interface Reactions {
+  likes:    number;
+  dislikes: number;
+}
