@@ -1,0 +1,21 @@
+.post-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  .form-control {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    gap: 8px;
+
+    span {
+      width: 80px;
+    }
+
+    .input-field {
+      flex: 1;
+    }
+
+  }
+}

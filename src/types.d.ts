@@ -115,3 +115,26 @@ export interface Reactions {
   likes:    number;
   dislikes: number;
 }
+
+export interface PostPutResponse {
+  id:        number;
+  title:     string;
+  body:      string;
+  userId:    number;
+  tags:      string[];
+  reactions: Reactions;
+}
+
+export interface Reactions {
+  likes:    number;
+  dislikes: number;
+}
+
+export interface PostFormProps {
+  postId: number;
+  title:     string;
+  body:      string;
+  userId:    number;
+  tags:      string;
+  onSave?: (s: PostPutResponse) => void;
+}
