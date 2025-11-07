@@ -1,11 +1,53 @@
-import { useState } from 'react'
+import axios from 'axios'
+import { useEffect, useState } from 'react'
+import './App.css'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
-import './App.css'
 
 function App() {
   const [count, setCount] = useState(0)
 
+useEffect(() => {
+  axios.post('https://dummyjson.com/auth/login', { username: "emilys", password: "emilyspass" }).then(response => {
+    console.log({response});
+    console.log(response.data)
+  })
+}, [])
+useEffect(() => {
+  axios.get('https://dummyjson.com/posts?limit=10&skip=0').then(response => {
+    console.log({postResponse: response.data});
+  })
+}, [])
+useEffect(() => {
+  axios.get('https://dummyjson.com/posts/search?q=love').then(response => {
+    console.log({postSearchResponse: response.data});
+  })
+}, [])
+useEffect(() => {
+  axios.post('https://dummyjson.com/posts/add', {
+    title: 'I am in love with someone.',
+    userId: 5,
+  }).then(response => {
+    console.log({postAddResponse: response.data});
+  })
+}, [])
+useEffect(() => {
+  axios.put('https://dummyjson.com/posts/1',{
+    title: 'I think I should shift to the moon',
+  }).then(response => {
+    console.log({postUpdateResponse: response.data});
+  })
+}, [])
+useEffect(() => {
+  axios.delete('https://dummyjson.com/posts/1').then(response => {
+    console.log({postDeleteResponse: response.data});
+  })
+}, [])
+useEffect(() => {
+  axios.get('https://dummyjson.com/users?limit=5&skip=10&select=firstName,age').then(response => {
+    console.log({GetUserResponse: response.data});
+  })
+}, [])
   return (
     <>
       <div>
