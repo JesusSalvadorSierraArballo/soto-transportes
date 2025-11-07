@@ -22,7 +22,7 @@ function Login() {
         password: password,
       })
       .then((response: any) => {
-        console.log({ response });
+        localStorage.setItem("accessToken", response.data.accessToken);
         navigate("/post");
       })
       .finally(() => {
