@@ -3,7 +3,7 @@ import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
 import { type SubmitHandler, useForm } from "react-hook-form";
-import type { PostFormProps, PostPutResponse } from "../../../types";
+import type { PostFormProps, PostPostResponse, PostPutResponse } from "../../../types";
 import './post-form.css';
 
 type Inputs = {
@@ -14,7 +14,7 @@ type Inputs = {
 }
 
 export default function PostForm(props: PostFormProps) {
-  const { onSave } = props;
+  const { onUpdate, onNew } = props;
   const {
     register,
     handleSubmit,
@@ -25,7 +25,30 @@ export default function PostForm(props: PostFormProps) {
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     if(props.postId === 0) {
-      return;
+      axios.post<PostPostResponse>('https://dummyjson.com/posts/add', {
+        title: data.title,
+        body: data.body,
+        userId: +data.userId,
+        tags: data.tags.split(',')
+      }).then(response => {
+        const {data} = response
+        if(onNew) {
+          onNew(
+           {
+             id: data.id,
+             title: data.title,
+             body: data.body,
+             userId: +data.userId,
+             tags: data.tags,
+             reactions: {
+               likes: 0,
+               dislikes: 0
+             }
+           }
+          )
+        }
+      })
+
     } else {
       axios.put<PostPutResponse>(`https://dummyjson.com/posts/${props.postId}`, 
         {...data, 
@@ -33,8 +56,8 @@ export default function PostForm(props: PostFormProps) {
           tags: data.tags.split(',')
         })
       .then(response => {
-        if(onSave) {
-          onSave(response.data);
+        if(onUpdate) {
+          onUpdate(response.data);
         }
       })
     }

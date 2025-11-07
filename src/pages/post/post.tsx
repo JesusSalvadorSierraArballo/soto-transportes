@@ -11,7 +11,7 @@ import { Toast } from 'primereact/toast';
 import { useEffect, useRef, useState } from 'react';
 import { EditButtonTemplate } from '../../components/actions/actions';
 import { GetSingleUserResponseToUserBasicInfo } from '../../mappers/users/users';
-import type { GetAllPostResponse, GetSingleUserResponse, Post, PostDeleteResponse, PostFormProps, PostPutResponse, UserBasicInfo } from '../../types';
+import type { GetAllPostResponse, GetSingleUserResponse, Post, PostDeleteResponse, PostFormProps, PostPostResponse, PostPutResponse, UserBasicInfo } from '../../types';
 import PostForm from './post-form/post-form';
 import './post.css';
 
@@ -139,6 +139,30 @@ function Post() {
     setIsDialogVisible(false);
     toast.current.show({ severity: 'success', summary: 'Success', detail: `Post updated` });
   }
+  const afterSavePost = (updatedPost: PostPostResponse) => {
+    setPost((prevPosts) => [
+      ...prevPosts,
+      {
+        id: updatedPost.id,
+        title: updatedPost.title,
+        body: updatedPost.body,
+        tags: updatedPost.tags,
+        reactions: {
+          dislikes: 0,
+          likes: 0,
+        },
+        views: 0,
+        userId: updatedPost.userId,
+      },
+    ]);
+
+    setIsDialogVisible(false);
+    toast.current.show({
+      severity: "success",
+      summary: "Success",
+      detail: `Post ${updatedPost.title} Create`,
+    });
+  };
 
 const buttonGroupTemplate = (data: DisplayedPost) => (  
     <EditButtonTemplate
@@ -221,7 +245,8 @@ const onNewPost = () => {
           body={currentPost.body} 
           userId={currentPost.userId} 
           tags={currentPost.tags} 
-          onSave={afterUpdatePost}
+          onUpdate={afterUpdatePost}
+          onNew={afterSavePost}
           />
       </Dialog>
 
