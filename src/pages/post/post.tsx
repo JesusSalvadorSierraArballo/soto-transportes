@@ -1,20 +1,24 @@
 import axios from 'axios';
 import { FilterMatchMode } from 'primereact/api';
+import { Button } from 'primereact/button';
 import { Column, type ColumnFilterElementTemplateOptions } from 'primereact/column';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { DataTable } from 'primereact/datatable';
+import { Dialog } from 'primereact/dialog';
 import { Dropdown } from 'primereact/dropdown';
 import { MultiSelect } from 'primereact/multiselect';
 import { Toast } from 'primereact/toast';
 import { useEffect, useRef, useState } from 'react';
 import { EditButtonTemplate } from '../../components/actions/actions';
 import { GetSingleUserResponseToUserBasicInfo } from '../../mappers/users/users';
-import type { GetAllPostResponse, GetSingleUserResponse, Post, PostDeleteResponse, UserBasicInfo } from '../../types';
+import type { GetAllPostResponse, GetSingleUserResponse, Post, PostDeleteResponse, PostFormProps, PostPutResponse, UserBasicInfo } from '../../types';
+import PostForm from './post-form/post-form';
 import './post.css';
 
 type DisplayedPost = {
     id: number;
     title: string;
+    body: string;
     userID: number;
     userName: string | undefined;
     tags: string;
@@ -23,14 +27,50 @@ type DisplayedPost = {
 
 function Post() {
 
+  const defaultPost: PostFormProps = {
+    postId: 0,
+    title: "",
+    body: "",
+    userId: 0,
+    tags: "",
+  }
+
   const [post, setPost] = useState<Post[]>([]);
   const [users, setUsers] = useState<UserBasicInfo[]>([]);
+  const [isDialogVisible, setIsDialogVisible] = useState<boolean>(false);
+  const [currentPost, setCurrentPost] = useState<PostFormProps>(defaultPost);
   const toast = useRef<any>(null);
+
+
+    useEffect(() => {
+      axios.get<GetAllPostResponse>('https://dummyjson.com/posts?limit=10&skip=0').then(async response => {
+        setPost(response.data.posts);
+      });
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      let userIds = [... new Set(post.map(p => p.userId))];
+      userIds = userIds.filter(id => !users.some(user => user.id === id));
+
+      const usersData = await Promise.all<GetSingleUserResponse>(
+        userIds.map(async (id) => {
+          const res = await axios.get(`https://dummyjson.com/users/${id}`);
+          return res.data;
+        })
+      );
+      setUsers(prev => [...prev, ...usersData.map(GetSingleUserResponseToUserBasicInfo)]);
+    };    
+    
+    fetchData();
+    
+  }, [post]);
 
   let displayedPosts: DisplayedPost[] = post.map((post) => (
     {
       id: post.id,
       title: post.title,
+      body: post.body,
       userID: post.userId,
       userName: users.find(user => user.id === post.userId)?.firstName,
       tags: post.tags.join(', '),
@@ -52,28 +92,9 @@ function Post() {
   let userFilterOptions = users.map(user => ({ label: user.firstName, id: user.id }));
   let tagsFilterOptions = [... new Set(post.map(({tags}) => tags).flat())].map(tag => ({ id: tag, name: tag }));
 
-  useEffect(() => {
-    const fetchData = async () => {
-      axios.get<GetAllPostResponse>('https://dummyjson.com/posts?limit=10&skip=0').then(async response => {
-        setPost(response.data.posts);
-        let userIds = [... new Set(response.data.posts.map(p => p.userId))];
-        userIds = userIds.filter(id => !users.some(user => user.id === id));
 
-        const usersData = await Promise.all<GetSingleUserResponse>(
-            userIds.map(async (id) => {
-              const res = await axios.get(`https://dummyjson.com/users/${id}`);
-              return res.data;
-            })
-          );
-          setUsers(usersData.map(GetSingleUserResponseToUserBasicInfo))
-      });
-    };    
-    
-    fetchData();
-  }, []);
 
   const onCancel = (d: DisplayedPost) => {
-
     confirmDialog({
       message: `Are you sure you want to cancel the post?`,
       header: `Cancel Post: ${d.title}`,
@@ -88,14 +109,36 @@ function Post() {
   };
   
   const onView = (d: DisplayedPost) => {
-    console.log(d);
     toast.current.show({ severity: 'info', summary: 'Info', detail: `Post ID: ${d.id} Titulo: ${d.title}` });
   };
 
   const onEdit = (d: DisplayedPost) => {
-    console.log(d);
-    toast.current.show({ severity: 'info', summary: 'Info', detail: `Post ID: ${d.id} Titulo: ${d.title}` });
+    setIsDialogVisible(true);
+    setCurrentPost({
+      postId: d.id,
+      title: d.title,
+      body: d.body,
+      userId: d.userID,
+      tags: d.tags,
+    });
   };
+
+  const afterUpdatePost = (updatedPost: PostPutResponse) => {
+    setPost((prevPosts) => {
+      return prevPosts.map(p => p.id === updatedPost.id ? {
+        id: p.id,
+        title: updatedPost.title,
+        body: updatedPost.body,
+        userId: updatedPost.userId,
+        tags: updatedPost.tags,
+        reactions: p.reactions,
+        views: p.views,
+      } : p);
+    });
+
+    setIsDialogVisible(false);
+    toast.current.show({ severity: 'success', summary: 'Success', detail: `Post updated` });
+  }
 
 const buttonGroupTemplate = (data: DisplayedPost) => (  
     <EditButtonTemplate
@@ -136,10 +179,15 @@ const userFilterTemplate = (options: ColumnFilterElementTemplateOptions) => {
     />
   );
 };
+
+const onNewPost = () => {
+  setCurrentPost(defaultPost);
+  setIsDialogVisible(true);
+}
   
   return (
     <>
-      <h1>Post Page</h1>
+      <header><h1>Post Page</h1> <Button label="Nuevo Post" onClick={onNewPost} /></header>
       <DataTable value={displayedPosts} 
         dataKey="id" 
         filterDisplay="row"  
@@ -166,6 +214,16 @@ const userFilterTemplate = (options: ColumnFilterElementTemplateOptions) => {
       </DataTable>
       <Toast ref={toast} />
       <ConfirmDialog />
+      <Dialog header="Edit post: " visible={isDialogVisible} onHide={() => {if (!isDialogVisible) return; setIsDialogVisible(false); }}>
+        <PostForm 
+          postId={currentPost.postId} 
+          title={currentPost.title} 
+          body={currentPost.body} 
+          userId={currentPost.userId} 
+          tags={currentPost.tags} 
+          onSave={afterUpdatePost}
+          />
+      </Dialog>
 
     </>
   );
