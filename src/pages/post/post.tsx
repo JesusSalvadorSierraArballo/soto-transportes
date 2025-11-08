@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { FilterMatchMode } from 'primereact/api';
 import { Button } from 'primereact/button';
 import { Column, type ColumnFilterElementTemplateOptions } from 'primereact/column';
@@ -10,6 +9,7 @@ import { MultiSelect } from 'primereact/multiselect';
 import { Toast } from 'primereact/toast';
 import { useEffect, useRef, useState } from 'react';
 import { EditButtonTemplate } from '../../components/actions/actions';
+import axiosJWT from '../../interceptors/jwt';
 import { GetSingleUserResponseToUserBasicInfo } from '../../mappers/users/users';
 import type { GetAllPostResponse, GetSingleUserResponse, Post, PostDeleteResponse, PostFormProps, PostPostResponse, PostPutResponse, UserBasicInfo } from '../../types';
 import PostForm from './post-form/post-form';
@@ -43,7 +43,7 @@ function Post() {
 
 
     useEffect(() => {
-      axios.get<GetAllPostResponse>('https://dummyjson.com/posts?limit=10&skip=0').then(async response => {
+      axiosJWT.get<GetAllPostResponse>('https://dummyjson.com/posts?limit=10&skip=0').then(async response => {
         setPost(response.data.posts);
       });
   }, []);
@@ -55,7 +55,7 @@ function Post() {
 
       const usersData = await Promise.all<GetSingleUserResponse>(
         userIds.map(async (id) => {
-          const res = await axios.get(`https://dummyjson.com/users/${id}`);
+          const res = await axiosJWT.get(`https://dummyjson.com/users/${id}`);
           return res.data;
         })
       );
@@ -99,7 +99,7 @@ function Post() {
       message: `Are you sure you want to cancel the post?`,
       header: `Cancel Post: ${d.title}`,
       accept: () => {
-        axios.delete<PostDeleteResponse>(`https://dummyjson.com/posts/${d.id}`).then(response => {
+        axiosJWT.delete<PostDeleteResponse>(`https://dummyjson.com/posts/${d.id}`).then(response => {
           const postDeleted = response.data;
           toast.current.show({ severity: 'info', summary: 'Info', detail: `Post cancelled` });
           setPost(prevPosts => prevPosts.filter(p => p.id !== postDeleted.id));
