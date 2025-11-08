@@ -1,6 +1,6 @@
 import { Button } from 'primereact/button';
 import { useDispatch } from 'react-redux';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Navigate, Outlet, useNavigate } from 'react-router-dom';
 import { useAppSelector } from '../hook/store';
 import { logout } from '../store/users/slice';
 import './authLayout.css';
@@ -15,6 +15,10 @@ function AuthLayout() {
     navigate('/login');
   }
   
+  if(!Boolean(currentUser.id)) {
+    return(<Navigate to="/login"></Navigate>)
+  }
+
   return (
     <>
       <header><span>Accediste {currentUser.firstName} {currentUser.lastName} </span><Button onClick={handleLogout} label='Logout'/></header>
