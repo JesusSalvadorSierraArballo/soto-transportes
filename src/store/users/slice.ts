@@ -29,11 +29,11 @@ export const usersSlice = createSlice({
   name: 'users',
   initialState,
   reducers: {
-    login: (state, action: PayloadAction<LoginResponse>) => {
+    login: (_state, action: PayloadAction<LoginResponse>) => {
       localStorage.setItem("accessToken", JSON.stringify(action.payload));
       return action.payload
     },
-    logout: (state) => {
+    logout: (_state) => {
       localStorage.removeItem("accessToken");
       return initialState
     },
