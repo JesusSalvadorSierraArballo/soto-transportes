@@ -3,7 +3,6 @@ import axios from "axios";
 
 const axiosJWT = axios.create()
 axiosJWT.interceptors.request.use(function (config) {
-  console.log('object');
     const userInfo = localStorage.getItem('accessToken');
     if(!userInfo) {
       return Promise.reject()
