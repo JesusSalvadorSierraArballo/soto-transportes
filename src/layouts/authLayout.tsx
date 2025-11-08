@@ -1,15 +1,23 @@
 import { Button } from 'primereact/button';
+import { useDispatch } from 'react-redux';
 import { Outlet, useNavigate } from 'react-router-dom';
+import { useAppSelector } from '../hook/store';
+import { logout } from '../store/users/slice';
 import './authLayout.css';
 
 function AuthLayout() {
+  const currentUser = useAppSelector((state) => state.authUser)
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const logout = () => {
+
+  const handleLogout = () => {
+    dispatch(logout())
     navigate('/login');
   }
+  
   return (
     <>
-      <header><span>Accediste Jesús Sierra </span><Button onClick={logout} label='Logout'/></header>
+      <header><span>Accediste {currentUser.firstName} {currentUser.lastName} </span><Button onClick={handleLogout} label='Logout'/></header>
       <Outlet />
     </>
   );
