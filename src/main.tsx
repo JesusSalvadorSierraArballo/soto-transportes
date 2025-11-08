@@ -10,7 +10,7 @@ import 'primereact/resources/themes/lara-light-blue/theme.css';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import './index.css';
 import AuthLayout from './layouts/authLayout.tsx';
 import Login from './pages/login/login.tsx';
@@ -27,6 +27,10 @@ createRoot(document.getElementById("root")!).render(
           <Route element={<AuthLayout />}>
             <Route path="/post" element={<Post />} />
           </Route>
+          <Route
+            path="*"
+            element={<Navigate to="/login" replace={true} />}
+          />
         </Routes>
       </BrowserRouter>
     </PrimeReactProvider>

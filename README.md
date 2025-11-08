@@ -1,73 +1,44 @@
-# React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Trasportes Soto (Prueba técnica)
+## Ejecutar
+Instalación: Este comando instala los paquete y dependencias del projecto.
 
-Currently, two official plugins are available:
+``npm run i``
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Correr en modo desarrollo: Se corre el sistema de manera local
 
-## React Compiler
+``npm run dev``
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+para visualizar el sistema acceder a: 
+http://localhost:5173/login
 
-## Expanding the ESLint configuration
+## Flujo principal
+Al entrar a la ruta: http://localhost:5173/login encontrarás el login
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+![alt text](documentation/images/login.png)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Aquí podrás acceder las credenciales 
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+usuario: emilys
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+contraseña emilyspass
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Al acceder, encontrarás la página de Post
+![alt text](documentation/images/post.png)
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+En esta página podrás realizar acciones como:
+* Editar Post
+* Cancelar Post
+* Visualizar Post como pdf
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+![alt text](documentation/images/post_acciones.png)
+
+Estla página está sobre un layout general, con el encabezado que incluye el nombre del usuario actual, y un boton para cerrar sesión.
+
+Al crear un nuevo registor o editar uno existente, se abrirá un formulario, al llenarlo y presionar guardar, se guarda el registro y se actualiza la tabla.
+![alt text](documentation/images/Form.png)
+
+## Por hacer
+* Implementar testing
+* implementar custom hooks (crud post)
+* cambiar campo de user en el formulario por un select
