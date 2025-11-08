@@ -16,7 +16,6 @@ const DEFAULT_STATE: LoginResponse = {
 
 const initialState = (() => { 
   const persistedState = localStorage.getItem('accessToken')
-  console.log({persistedState})
   if(persistedState) {
     return JSON.parse(persistedState)
   } else {

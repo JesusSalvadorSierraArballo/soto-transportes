@@ -37,7 +37,7 @@ function Login() {
     <div className="login--body">
       <article className="login">
         <header>
-          <h1>Soto transportes Login</h1>
+          <h1>Soto transportes</h1>
         </header>
         <section>
           <label className="form-control">
