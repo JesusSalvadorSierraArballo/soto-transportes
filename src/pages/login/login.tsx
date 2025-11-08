@@ -4,6 +4,7 @@ import { InputText } from "primereact/inputtext";
 import { Password } from "primereact/password";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import type { LoginResponse } from "../../types";
 import "./login.css";
 
 function Login() {
@@ -17,11 +18,11 @@ function Login() {
   const onLoginClick = () => {
     setLoading(true);
     axios
-      .post("https://dummyjson.com/auth/login", {
+      .post<LoginResponse>("https://dummyjson.com/auth/login", {
         username: user,
         password: password,
       })
-      .then((response: any) => {
+      .then((response) => {
         localStorage.setItem("accessToken", response.data.accessToken);
         navigate("/post");
       })
