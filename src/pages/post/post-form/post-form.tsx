@@ -1,8 +1,8 @@
-import axios from "axios";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
 import { type SubmitHandler, useForm } from "react-hook-form";
+import axiosJWT from "../../../interceptors/jwt";
 import type { PostFormProps, PostPostResponse, PostPutResponse } from "../../../types";
 import './post-form.css';
 
@@ -25,7 +25,7 @@ export default function PostForm(props: PostFormProps) {
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     if(props.postId === 0) {
-      axios.post<PostPostResponse>('https://dummyjson.com/posts/add', {
+      axiosJWT.post<PostPostResponse>('https://dummyjson.com/posts/add', {
         title: data.title,
         body: data.body,
         userId: +data.userId,
@@ -50,7 +50,7 @@ export default function PostForm(props: PostFormProps) {
       })
 
     } else {
-      axios.put<PostPutResponse>(`https://dummyjson.com/posts/${props.postId}`, 
+      axiosJWT.put<PostPutResponse>(`https://dummyjson.com/posts/${props.postId}`, 
         {...data, 
           userId: +data.userId,
           tags: data.tags.split(',')
