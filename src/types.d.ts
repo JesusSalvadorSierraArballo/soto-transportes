@@ -159,3 +159,13 @@ export interface PostPostResponse {
   userId: number;
   tags:   string[];
 }
+
+export type DisplayedPost = {
+    id: number;
+    title: string;
+    body: string;
+    userID: number;
+    userName: string | undefined;
+    tags: string;
+    reactions: string;
+}
