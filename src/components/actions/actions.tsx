@@ -12,18 +12,21 @@ export function EditButtonTemplate<T>(props: EditButtonTemplateProps<T>) {
   return (
     <>
       <Button
-        label="Editar"
         className="p-button-sm"
+        title="Editar post"
+        icon="pi pi-pen-to-square"
         onClick={() => onEdit(data)}
       ></Button> 
       <Button
-        label="Ver"
+        icon="pi pi-file-pdf"
+        title="Ver pdf"
         className="p-button-sm"
         onClick={() => onView(data)}
         severity="secondary"
       ></Button> 
       <Button
-        label="Cancelar"
+        icon="pi pi-trash"
+        title="Cancelar post"
         className="p-button-sm"
         onClick={() => onCancel(data)}
         severity="warning"

@@ -21,7 +21,7 @@ function AuthLayout() {
 
   return (
     <>
-      <header><span>Accediste {currentUser.firstName} {currentUser.lastName} </span><Button onClick={handleLogout} label='Logout'/></header>
+      <header><span>Accediste {currentUser.firstName} {currentUser.lastName} </span><Button onClick={handleLogout} icon="pi pi-sign-out" title='Logout'/></header>
       <Outlet />
     </>
   );

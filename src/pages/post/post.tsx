@@ -215,7 +215,7 @@ const onNewPost = () => {
   
   return (
     <>
-      <header><h1>Post Page</h1> <Button label="Nuevo Post" onClick={onNewPost} /></header>
+      <header><h1>Post Page</h1> <Button title="Nuevo Post" icon="pi pi-plus-circle" onClick={onNewPost} /></header>
       <DataTable value={displayedPosts} 
         dataKey="id" 
         filterDisplay="row"  
