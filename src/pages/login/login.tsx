@@ -16,7 +16,7 @@ function Login() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  let canSubmit = user.length > 0 && password.length > 0;
+  const canSubmit = user.length > 0 && password.length > 0;
 
   const onLoginClick = () => {
     setLoading(true);

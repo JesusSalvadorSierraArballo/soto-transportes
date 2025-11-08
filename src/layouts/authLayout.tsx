@@ -15,7 +15,7 @@ function AuthLayout() {
     navigate('/login');
   }
   
-  if(!Boolean(currentUser.id)) {
+  if(!currentUser.id) {
     return(<Navigate to="/login"></Navigate>)
   }
 

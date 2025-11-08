@@ -66,7 +66,7 @@ function Post() {
     
   }, [post]);
 
-  let displayedPosts: DisplayedPost[] = post.map((post) => (
+  const displayedPosts: DisplayedPost[] = post.map((post) => (
     {
       id: post.id,
       title: post.title,
@@ -89,8 +89,8 @@ function Post() {
     }
   };
   
-  let userFilterOptions = users.map(user => ({ label: user.firstName, id: user.id }));
-  let tagsFilterOptions = [... new Set(post.map(({tags}) => tags).flat())].map(tag => ({ id: tag, name: tag }));
+  const userFilterOptions = users.map(user => ({ label: user.firstName, id: user.id }));
+  const tagsFilterOptions = [... new Set(post.map(({tags}) => tags).flat())].map(tag => ({ id: tag, name: tag }));
 
 
 
