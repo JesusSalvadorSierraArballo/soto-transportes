@@ -1,3 +1,4 @@
+import { PDFViewer } from '@react-pdf/renderer';
 import { FilterMatchMode } from 'primereact/api';
 import { Button } from 'primereact/button';
 import { Column, type ColumnFilterElementTemplateOptions } from 'primereact/column';
@@ -9,21 +10,12 @@ import { MultiSelect } from 'primereact/multiselect';
 import { Toast } from 'primereact/toast';
 import { useEffect, useRef, useState } from 'react';
 import { EditButtonTemplate } from '../../components/actions/actions';
+import { PostPDF } from '../../docs/post';
 import axiosJWT from '../../interceptors/jwt';
 import { GetSingleUserResponseToUserBasicInfo } from '../../mappers/users/users';
-import type { GetAllPostResponse, GetSingleUserResponse, Post, PostDeleteResponse, PostFormProps, PostPostResponse, PostPutResponse, UserBasicInfo } from '../../types';
+import type { DisplayedPost, GetAllPostResponse, GetSingleUserResponse, Post, PostDeleteResponse, PostFormProps, PostPostResponse, PostPutResponse, UserBasicInfo } from '../../types';
 import PostForm from './post-form/post-form';
 import './post.css';
-
-type DisplayedPost = {
-    id: number;
-    title: string;
-    body: string;
-    userID: number;
-    userName: string | undefined;
-    tags: string;
-    reactions: string;
-}
 
 function Post() {
 
@@ -38,6 +30,7 @@ function Post() {
   const [post, setPost] = useState<Post[]>([]);
   const [users, setUsers] = useState<UserBasicInfo[]>([]);
   const [isDialogVisible, setIsDialogVisible] = useState<boolean>(false);
+  const [isDialogViewerVisible, setIsDialogViewerVisible] = useState<boolean>(false);
   const [currentPost, setCurrentPost] = useState<PostFormProps>(defaultPost);
   const toast = useRef<any>(null);
 
@@ -109,6 +102,17 @@ function Post() {
   };
   
   const onView = (d: DisplayedPost) => {
+
+    setIsDialogViewerVisible(true)
+
+    setCurrentPost({
+      postId: d.id,
+      title: d.title,
+      body: d.body,
+      userId: d.userID,
+      tags: d.tags,
+    });
+
     toast.current.show({ severity: 'info', summary: 'Info', detail: `Post ID: ${d.id} Titulo: ${d.title}` });
   };
 
@@ -248,6 +252,18 @@ const onNewPost = () => {
           onUpdate={afterUpdatePost}
           onNew={afterSavePost}
           />
+      </Dialog>
+      <Dialog header="PDF" visible={isDialogViewerVisible} onHide={() => {if (!isDialogViewerVisible) return; setIsDialogViewerVisible(false); }} style={{ width: '50vw', height:'80vh' }}>
+        <PDFViewer height={'100%'} width={'100%'}>
+          <PostPDF 
+            title={currentPost.title}
+            body={currentPost.body}
+            tags={currentPost.tags} 
+            id={currentPost.postId} 
+            userID={currentPost.userId} 
+            userName={''} 
+            reactions={''}          />
+        </PDFViewer>
       </Dialog>
 
     </>
